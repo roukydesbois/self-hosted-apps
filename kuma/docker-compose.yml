@@ -1,0 +1,34 @@
+---
+version: "3.7"
+services:
+  ts-kuma:
+    image: tailscale/tailscale:latest
+    container_name: ts-kuma
+    hostname: monitoring
+    environment:
+      - TS_AUTHKEY=${TAILSCALE_OAUTH_KEY}
+      - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS}
+      - TS_SERVE_CONFIG=/config/kuma.json
+      - TS_STATE_DIR=/var/lib/tailscale
+    volumes:
+      - ts-kuma-state:/var/lib/tailscale
+      - ${PWD}/ts-kuma/config:/config
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+      - sys_module
+    restart: unless-stopped
+  kuma:
+    image: louislam/uptime-kuma:1
+    container_name: kuma
+    depends_on:
+      - ts-kuma
+    volumes:
+      - kuma-data:/app/data/
+    restart: unless-stopped
+
+volumes:
+  ts-kuma-state:
+    driver: local
+  kuma-data:
+    driver: local
