@@ -108,6 +108,30 @@ services:
       MARIADB_PASSWORD: ${PHOTOPRISM_DATABASE_PASSWORD}
       MARIADB_ROOT_PASSWORD: "insecure"
 
+  ts-filebrowser:
+    image: tailscale/tailscale:latest
+    hostname: photoprism-files
+    environment:
+      - TS_AUTHKEY=${TAILSCALE_OAUTH_KEY}
+      - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_SERVE_CONFIG=/config/filebrowser.json
+    volumes:
+      - ts-photoprism-files-state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+      - ./ts-filebrowser/config:/config
+    cap_add:
+      - net_admin
+      - sys_module
+    restart: unless-stopped
+  
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    volumes:
+      - filebrowser-db:/database
+      - ./filebrowser-config:/config
+      - /data:/srv
+
   watchtower:
     restart: unless-stopped
     image: containrrr/watchtower
@@ -120,4 +144,8 @@ services:
 
 volumes:
   ts-photoprism-state:
+    driver: local
+  ts-photoprism-files-state:
+    driver: local
+  filebrowser-db:
     driver: local
