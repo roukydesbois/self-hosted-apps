@@ -1,0 +1,61 @@
+services: 
+  ts-nextcloud-aio:
+    image: tailscale/tailscale:latest
+    hostname: nextcloud-aio
+    environment:
+      - TS_AUTHKEY=${TAILSCALE_OAUTH_KEY2}
+      - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS}
+      - TS_SERVE_CONFIG=/config/nextcloud-aio.json
+      - TS_STATE_DIR=/var/lib/tailscale
+    volumes:
+      - ts-nextcloud-aio-state:/var/lib/tailscale
+      - ${PWD}/ts-nextcloud-aio/config:/config
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+      - sys_module
+    restart: unless-stopped
+
+  ts-nextcloud:
+    image: tailscale/tailscale:latest
+    hostname: nextcloud
+    network_mode: host
+    environment:
+      - TS_AUTHKEY=${TAILSCALE_OAUTH_KEY}
+      - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS}
+      - TS_SERVE_CONFIG=/config/nextcloud.json
+      - TS_STATE_DIR=/var/lib/tailscale
+    volumes:
+      - ts-nextcloud-state:/var/lib/tailscale
+      - ${PWD}/ts-nextcloud/config:/config
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+      - sys_module
+    restart: unless-stopped
+
+  nextcloud-aio-mastercontainer:
+    image: nextcloud/all-in-one:latest
+    init: true
+    restart: always
+    container_name: nextcloud-aio-mastercontainer # This line is not allowed to be changed as otherwise AIO will not work correctly
+    volumes:
+      - nextcloud_aio_mastercontainer:/mnt/docker-aio-config # This line is not allowed to be changed as otherwise the built-in backup solution will not work
+      - /var/run/docker.sock:/var/run/docker.sock:ro # May be changed on macOS, Windows or docker rootless. See the applicable documentation. If adjusting, don't forget to also set 'WATCHTOWER_DOCKER_SOCKET_PATH'!
+    ports:
+      - 8080:8080
+    environment:
+      APACHE_PORT: 11000 
+      NEXTCLOUD_DATADIR: /mnt/ncdata 
+
+volumes: # If you want to store the data on a different drive, see https://github.com/nextcloud/all-in-one#how-to-store-the-filesinstallation-on-a-separate-drive
+  nextcloud_aio_mastercontainer:
+    name: nextcloud_aio_mastercontainer # This line is not allowed to be changed as otherwise the built-in backup solution will not work
+  ts-nextcloud-aio-state:
+    driver: local
+  ts-nextcloud-state:
+    driver: local
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local
