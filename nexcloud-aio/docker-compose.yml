@@ -3,8 +3,8 @@ services:
     image: tailscale/tailscale:latest
     hostname: nextcloud-aio
     environment:
-      - TS_AUTHKEY=${TAILSCALE_OAUTH_KEY2}
-      - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS}
+      - TS_AUTHKEY=${TAILSCALE_OAUTH_KEY_NCAIO}
+      - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS_NCAIO}
       - TS_SERVE_CONFIG=/config/nextcloud-aio.json
       - TS_STATE_DIR=/var/lib/tailscale
     volumes:
@@ -21,8 +21,8 @@ services:
     hostname: nextcloud
     network_mode: host
     environment:
-      - TS_AUTHKEY=${TAILSCALE_OAUTH_KEY}
-      - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS}
+      - TS_AUTHKEY=${TAILSCALE_OAUTH_KEY_NC}
+      - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS_NC}
       - TS_SERVE_CONFIG=/config/nextcloud.json
       - TS_STATE_DIR=/var/lib/tailscale
     volumes:
