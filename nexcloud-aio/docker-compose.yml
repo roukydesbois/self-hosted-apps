@@ -70,6 +70,8 @@ services:
     image: syncthing/syncthing
     container_name: syncthing
     hostname: syncthing
+    environment:
+      - PUID=33 # same as nextcloud aio
     volumes:
       - /mnt/external_data/syncthing:/var/syncthing
     restart: unless-stopped
