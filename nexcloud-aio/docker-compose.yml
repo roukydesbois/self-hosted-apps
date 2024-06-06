@@ -46,7 +46,33 @@ services:
       - 8080:8080
     environment:
       APACHE_PORT: 11000 
-      NEXTCLOUD_DATADIR: /mnt/ncdata 
+      NEXTCLOUD_DATADIR: /mnt/ncdata
+      NEXTCLOUD_MOUNT: /mnt/external_data
+
+  ts-syncthing:
+    image: tailscale/tailscale:latest
+    hostname: syncthing-ncaio
+    environment:
+      - TS_AUTHKEY=${TAILSCALE_OAUTH_KEY_SYNCTNCAIO}
+      - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS_SYNCTNCAIO}
+      - TS_SERVE_CONFIG=/config/syncthing-ncaio.json
+      - TS_STATE_DIR=/var/lib/tailscale
+    volumes:
+      - ts-syncthing-ncaio-state:/var/lib/tailscale
+      - ${PWD}/ts-syncthing-ncaio/config:/config
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+      - sys_module
+    restart: unless-stopped
+
+  syncthing:
+    image: syncthing/syncthing
+    container_name: syncthing
+    hostname: syncthing
+    volumes:
+      - /mnt/external_data/syncthing:/var/syncthing
+    restart: unless-stopped
 
 volumes: # If you want to store the data on a different drive, see https://github.com/nextcloud/all-in-one#how-to-store-the-filesinstallation-on-a-separate-drive
   nextcloud_aio_mastercontainer:
@@ -54,6 +80,8 @@ volumes: # If you want to store the data on a different drive, see https://githu
   ts-nextcloud-aio-state:
     driver: local
   ts-nextcloud-state:
+    driver: local
+  ts-syncthing-ncaio-state:
     driver: local
   caddy_data:
     driver: local
