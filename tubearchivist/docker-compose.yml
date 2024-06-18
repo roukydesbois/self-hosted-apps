@@ -18,8 +18,8 @@ services:
       - sys_module
     restart: unless-stopped
 
-  tubearchivist:
-    container_name: tubearchivist
+  tubearchivist-front:
+    container_name: tubearchivist-front
     restart: unless-stopped
     image: bbilly1/tubearchivist
 #    ports:

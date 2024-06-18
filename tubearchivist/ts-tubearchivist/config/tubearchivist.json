@@ -8,7 +8,7 @@
       "${TS_CERT_DOMAIN}:443": {
         "Handlers": {
           "/": {
-            "Proxy": "http://tubearchivist:8000"
+            "Proxy": "http://tubearchivist-front:8000"
           }
         }
       }
