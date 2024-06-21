@@ -1,0 +1,54 @@
+---
+services:
+  ts-matrix:
+    image: tailscale/tailscale:latest
+    container_name: ts-matrix
+    hostname: matrix
+    environment:
+      - TS_AUTHKEY=${TAILSCALE_OAUTH_KEY}
+      - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_SOCKET=/var/run/tailscale/tailscaled.sock
+    volumes:
+      - ts-matrix-state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+      - ${PWD}/ts-matrix/tailscale-socket:/var/run/tailscale
+    cap_add:
+      - net_admin
+      - sys_module
+    restart: unless-stopped
+
+  traefik:
+    image: "traefik:v3.0"
+    restart: always
+    container_name: "traefik"
+    networks:
+      - traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.network=traefik"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web-secure.address=:443"
+      - "--entrypoints.matrix-federation.address=:8448"
+      - "--entrypoints.matrix-internal-matrix-client-api.address=:8008"
+      - "--certificatesresolvers.default.tailscale=true"
+    ports:
+      - "443:443"
+      - "8448:8448"
+    volumes:
+#      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - ${PWD}/ts-matrix/tailscale-socket:/var/run/tailscale
+    depends_on: 
+      - ts-matrix
+
+networks:
+  traefik:
+    external: true
+
+volumes:
+  ts-matrix-state:
+    driver: local
+  postgres-data:
+    driver: local
