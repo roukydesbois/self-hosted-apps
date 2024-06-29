@@ -1,17 +1,14 @@
 ---
-version: "3.7"
 services:
   ts-kuma:
     image: tailscale/tailscale:latest
     container_name: ts-kuma
     hostname: monitoring
-    network_mode: host
     environment:
       - TS_AUTHKEY=${TAILSCALE_OAUTH_KEY}
       - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS}
       - TS_SERVE_CONFIG=/config/kuma.json
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_ACCEPT_DNS=true
     volumes:
       - ts-kuma-state:/var/lib/tailscale
       - ${PWD}/ts-kuma/config:/config
