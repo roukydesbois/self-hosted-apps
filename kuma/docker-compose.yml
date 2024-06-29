@@ -11,7 +11,7 @@ services:
       - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS}
       - TS_SERVE_CONFIG=/config/kuma.json
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_ACCEPT_DNS
+      - TS_ACCEPT_DNS=true
     volumes:
       - ts-kuma-state:/var/lib/tailscale
       - ${PWD}/ts-kuma/config:/config
