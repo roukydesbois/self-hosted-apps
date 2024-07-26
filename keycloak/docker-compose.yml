@@ -40,6 +40,9 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+        restart: true
+      ts-keycloak:
+        condition: service_started
     container_name: keycloak
     environment:
       KC_DB: postgres
