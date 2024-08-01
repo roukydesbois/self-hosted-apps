@@ -18,7 +18,7 @@ services:
       - sys_module
     restart: unless-stopped
 
-  audiobookshelf:
+  audiobookshelf-front:
     image: ghcr.io/advplyr/audiobookshelf:latest
     volumes:
       - ${MEDIA_FOLDER}/audiobooks:/audiobooks
