@@ -21,8 +21,8 @@ services:
   audiobookshelf:
     image: ghcr.io/advplyr/audiobookshelf:latest
     volumes:
-      - /data/audiobooks:/audiobooks
-      - /data/podcasts:/podcasts
+      - ${MEDIA_FOLDER}/audiobooks:/audiobooks
+      - ${MEDIA_FOLDER}/podcasts:/podcasts
       - audiobookshelf-config:/config
       - audiobookshelf-metadata:/metadata
     environment:
