@@ -1,0 +1,37 @@
+---
+services:
+  ts-audiobookshelf:
+    image: tailscale/tailscale:latest
+    container_name: ts-audiobookshelf
+    hostname: audiobookshelf
+    environment:
+      - TS_AUTHKEY=${TAILSCALE_OAUTH_KEY}
+      - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS}
+      - TS_SERVE_CONFIG=/config/audiobookshelf.json
+      - TS_STATE_DIR=/var/lib/tailscale
+    volumes:
+      - ts-audiobookshelf-state:/var/lib/tailscale
+      - ${PWD}/ts-audiobookshelf/config:/config
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+      - sys_module
+    restart: unless-stopped
+
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    volumes:
+      - /data/audiobooks:/audiobooks
+      - /data/podcasts:/podcasts
+      - audiobookshelf-config:/config
+      - audiobookshelf-metadata:/metadata
+    environment:
+      - TZ=Europe/Lisbon
+
+volumes:
+  ts-audiobookshelf-state:
+    driver: local
+  audiobookshelf-config:
+    driver: local
+  audiobookshelf-metadata:
+    driver: local
