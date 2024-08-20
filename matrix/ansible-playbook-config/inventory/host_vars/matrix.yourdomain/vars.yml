@@ -114,3 +114,5 @@ matrix_appservice_slack_puppeting_slackapp_client_secret: "{{ vault_matrix_appse
 matrix_appservice_slack_team_sync_enabled: true
 
 matrix_mautrix_slack_enabled: true
+
+matrix_mautrix_discord_enabled: true
