@@ -106,9 +106,11 @@ matrix_mautrix_telegram_api_hash: "{{ vault_matrix_mautrix_telegram_api_hash }}"
 
 matrix_mautrix_signal_enabled: true
 
-matrix_appservice_slack_enabled: true
+matrix_appservice_slack_enabled: false
 matrix_appservice_slack_control_room_id: "{{ vault_matrix_appservice_slack_control_room_id }}"
 matrix_appservice_slack_puppeting_enabled: true
 matrix_appservice_slack_puppeting_slackapp_client_id: "{{ vault_matrix_appservice_slack_puppeting_slackapp_client_id }}"
 matrix_appservice_slack_puppeting_slackapp_client_secret: "{{ vault_matrix_appservice_slack_puppeting_slackapp_client_secret }}"
 matrix_appservice_slack_team_sync_enabled: true
+
+matrix_mautrix_slack_enabled: true
