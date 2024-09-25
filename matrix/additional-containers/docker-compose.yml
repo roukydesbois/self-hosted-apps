@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
 
   traefik:
-    image: "traefik:v3.0"
+    image: "traefik:v3.1"
     restart: always
     container_name: "traefik"
     networks:
