@@ -33,7 +33,7 @@ services:
       - "--entrypoints.web-secure.address=:443"
       - "--entrypoints.matrix-federation.address=:8448"
       - "--entrypoints.matrix-internal-matrix-client-api.address=:8008"
-      - "--certificatesresolvers.ts.tailscale=true"
+      - "--certificatesresolvers.default.tailscale=true"
     ports:
       - "443:443"
       - "8448:8448"

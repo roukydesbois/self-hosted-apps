@@ -48,7 +48,7 @@ devture_traefik_certs_dumper_ssl_dir_path: "/path/to/your/traefiks/acme.json/dir
 # Example value: someone@example.com
 devture_traefik_config_certificatesResolvers_acme_email: ''
 # Defined in the separate traefik container
-devture_traefik_certResolver_primary: 'ts'
+devture_traefik_certResolver_primary: default
 
 # A Postgres password to use for the superuser Postgres user (called `matrix` by default).
 #
